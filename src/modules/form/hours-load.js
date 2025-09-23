@@ -4,8 +4,13 @@ import { hoursClick } from "./hours-click.js"
 
 const hours = document.getElementById("hours")
 
- export function hoursLoad( { date } ) {
+ export function hoursLoad( { date, dailySchedules } ) {
     hours.innerHTML = "";
+
+    // Obtém a lista de horários ocupados.
+    const unavailableHours = dailySchedules.map((schedule) => dayjs(schedule.when).format("H:mm"))
+
+
 
    const opening = openingHours.map((hour) => {
     // Recupera somente a hora.
@@ -13,11 +18,13 @@ const hours = document.getElementById("hours")
 
 
     // Adiciona a hora na data e verificar se esta no passado.
-    const isHourPast = dayjs (date).add(scheduleHour, "hour").isAfter(dayjs())
+    const isHourPast = dayjs (date).add(scheduleHour, "hour").isBefore(dayjs())
+
+    const available = !unavailableHours.includes(hour) && !isHourPast
 
     return {
         hour,
-        available: isHourPast,
+        available
     }
     
    })
